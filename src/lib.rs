@@ -90,6 +90,22 @@ impl GameResult {
             score: 0.5,
         }
     }
+    
+    /// Constructs a new game result representing a custom outcome with a player or team
+    /// with rating `opponent_rating`.
+    /// `score` is 0.0 for a loss, 0.5 for a draw, and 1.0 for a win.
+    ///
+    /// A `Glicko2Rating` or `GlickoRating` can be supplied for `opponent_rating`,
+    /// and it will not affect the result of rating calculations
+    /// as the volatility of opponents are not looked at for updating ratings.
+    pub fn custom<T: Into<Glicko2Rating>>(opponent_rating: T, score: f64) -> GameResult {
+        let opponent_glicko2: Glicko2Rating = opponent_rating.into();
+        GameResult {
+            opponent_rating_value: opponent_glicko2.value,
+            opponent_rating_deviation: opponent_glicko2.deviation,
+            score,
+        }
+    }
 }
 
 impl From<GlickoRating> for Glicko2Rating {
